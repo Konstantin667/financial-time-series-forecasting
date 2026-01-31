@@ -23,7 +23,7 @@ The goal is to simulate a realistic analytics workflow, where raw transactional 
 ## Tools & Technologies
 
 - **Python**: pandas, numpy, statsmodels, matplotlib  
-- **R**: forecast, tseries, ggplot2  
+- **R**: ggplot2, dplyr, readr, lubridate, forecast, tseries 
 - **Methods**: ADF test, ARIMA, SARIMA, ETS, backtesting  
 - **Data source**: Brazilian E-Commerce Public Dataset (Olist)
 
