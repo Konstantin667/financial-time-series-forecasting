@@ -32,6 +32,7 @@ The goal is to simulate a realistic analytics workflow where raw transactional d
 ## Data Source
 
 Raw transactional data is based on the **Olist Brazilian E-Commerce Dataset**.
+https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce?resource=download&select=product_category_name_translation.csv
 
 Due to file size limitations, raw CSV files are not stored directly in this repository.
 
