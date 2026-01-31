@@ -28,3 +28,68 @@ The goal is to simulate a realistic analytics workflow where raw transactional d
 - **Data source**: Brazilian E-Commerce Public Dataset (Olist)
 
 ---
+
+## 📊 Data Source
+
+Raw transactional data is based on the **Olist Brazilian E-Commerce Dataset**.
+
+Due to file size limitations, raw CSV files are not stored directly in this repository.
+
+🔗 **Raw datasets (Google Drive):**  
+👉 *PASTE YOUR DRIVE LINK HERE*
+
+Processed data used for modeling:
+- `data/processed/monthly_revenue.csv`
+
+---
+
+## 🔄 Workflow Summary
+
+1. **Python (Preprocessing)**
+   - Merge multiple transactional tables
+   - Calculate revenue
+   - Aggregate revenue at monthly level
+   - Stationarity testing (ADF)
+   - Baseline ARIMA exploration
+
+2. **R (Forecasting & Validation)**
+   - Convert data to time series object
+   - auto.arima model selection
+   - SARIMA modeling
+   - ETS modeling
+   - Residual diagnostics
+   - Backtesting and model comparison
+
+---
+
+## Key Results
+
+### Forecast Comparison (Backtesting)
+- **SARIMA** achieved lower RMSE compared to ETS
+- Both models captured trend but differed in variance handling
+- SARIMA selected as the final model
+
+### Example Outputs
+
+**Monthly Revenue Forecast (auto.arima):**  
+*(insert image here)*
+
+**Residual Diagnostics (SARIMA):**  
+*(insert image here)*
+
+---
+
+## Key Learnings
+
+- Importance of stationarity in time series modeling
+- Differences between ARIMA-family models and ETS
+- Model selection based on error metrics, not visual fit
+- Practical integration of Python + R in analytics workflows
+
+---
+
+## Author
+
+Konstantin Rudnev  
+Aspiring Data Analyst / Business Analyst
+Open to opportunities across Europe  
