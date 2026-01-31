@@ -110,12 +110,27 @@ This file contains a clean, ordered monthly revenue time series and serves as th
 
 ## Key Learnings
 
-- Stationarity is critical for reliable time series modeling
-- Seasonal components significantly improve forecast accuracy
-- Visual fit alone is insufficient — **error metrics matter**
-- Python and R can be effectively combined in a single analytical workflow
-- Classical models remain highly relevant in real business forecasting tasks
+- The original monthly revenue series was **non-stationary**, which was confirmed by the ADF test.  
+  After first-order differencing, the series became stationary and suitable for ARIMA-family models.
 
+- ACF and PACF analysis of the differenced series suggested a **low-order AR and MA structure**, supporting the use of compact ARIMA configurations rather than high-order models.
+
+- `auto.arima` selected an **ARIMA(1,1,0) with drift**, indicating that revenue growth is driven primarily by a persistent trend component rather than short-term shocks.
+
+- Seasonal patterns were present but **not strong enough to dominate the series**, which is why both ARIMA-based and ETS models were viable candidates.
+
+- **SARIMA outperformed ETS** in backtesting, achieving lower RMSE and MAE:
+  - SARIMA captured both the trend and short-term fluctuations more accurately
+  - ETS produced smoother forecasts but tended to underreact to changes in variance
+
+- Residual diagnostics for the SARIMA model showed:
+  - No significant autocorrelation in residuals
+  - Approximately symmetric residual distribution
+  - Acceptable independence assumptions for forecasting
+
+- Forecast uncertainty increased with the horizon, which was clearly reflected in the **widening confidence intervals**, emphasizing the importance of risk-aware interpretation in business forecasting.
+
+- Model selection was based on **quantitative error metrics and residual behavior**, not visual fit alone, leading to a more robust and defensible forecasting choice.
 ---
 
 ## Author
