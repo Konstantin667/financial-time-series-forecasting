@@ -29,21 +29,21 @@ The goal is to simulate a realistic analytics workflow where raw transactional d
 
 ---
 
-## 📊 Data Source
+## Data Source
 
 Raw transactional data is based on the **Olist Brazilian E-Commerce Dataset**.
 
 Due to file size limitations, raw CSV files are not stored directly in this repository.
 
-🔗 **Raw datasets (Google Drive):**  
-👉 *PASTE YOUR DRIVE LINK HERE*
+**Raw datasets (Google Drive):**  
+https://drive.google.com/drive/folders/1FeDjNPot8-LrITfVb58msrz1AUJUPZaT?usp=sharing
 
 Processed data used for modeling:
 - `data/processed/monthly_revenue.csv`
 
 ---
 
-## 🔄 Workflow Summary
+## Workflow Summary
 
 1. **Python (Preprocessing)**
    - Merge multiple transactional tables
