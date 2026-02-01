@@ -100,11 +100,61 @@ This file contains a clean, ordered monthly revenue time series and serves as th
 
 ## Example Outputs
 
-### Monthly Revenue Forecast (auto.arima)
-*(insert image here)*
+### Autocorrelation Function (ACF)
 
-### Residual Diagnostics (SARIMA)
-*(insert image here)*
+![ACF](assets/ACF.png)
+
+The ACF plot of the differenced monthly revenue series is used to identify potential moving average (MA) components.  
+Most autocorrelations lie within the confidence bounds, indicating that first-order differencing was sufficient to achieve stationarity.
+
+### Partial Autocorrelation Function (PACF)
+
+![PACF](assets/PACF.png)
+
+The PACF plot helps identify potential autoregressive (AR) terms.  
+A significant spike at lag 1 supports the inclusion of a low-order AR component in the ARIMA model.
+
+### Python – Baseline ARIMA Forecast
+
+![Baseline ARIMA Forecast](assets/python_arima_baseline.png)
+
+A baseline ARIMA(1,1,1) model was fitted in Python to validate stationarity assumptions and provide an initial forecast.  
+While the model captures the overall trend, wide confidence intervals indicate increasing uncertainty over the forecast horizon.
+
+### Python – Baseline ARIMA Forecast
+
+![Baseline ARIMA Forecast](assets/python_arima_baseline.png)
+
+A baseline ARIMA(1,1,1) model was fitted in Python to validate stationarity assumptions and provide an initial forecast.  
+While the model captures the overall trend, wide confidence intervals indicate increasing uncertainty over the forecast horizon.
+
+### R – auto.arima Forecast
+
+![Auto ARIMA Forecast](assets/Autoarima.png)
+
+The auto.arima function automatically selected an ARIMA(1,1,0) model with drift based on AIC criteria.  
+This model provided a strong statistical baseline for comparison with more complex seasonal models.
+
+### R – SARIMA Forecast
+
+![SARIMA Forecast](assets/Sarima.png)
+
+The SARIMA model explicitly accounts for seasonal structure in the monthly revenue data.  
+Compared to non-seasonal ARIMA, SARIMA produced more stable forecasts and narrower confidence intervals.
+
+### SARIMA Model – Residual Diagnostics
+
+![SARIMA Residuals](assets/risidualsarima.png)
+
+Residuals from the SARIMA model show no significant autocorrelation and approximate normality.  
+This confirms that SARIMA adequately captures both trend and seasonal components of the series.
+
+### Backtesting: Forecast vs Actual
+
+![Backtesting Results](assets/Backtesting.png)
+
+Backtesting was performed to compare ETS and SARIMA forecasts against actual revenue values.  
+SARIMA achieved lower RMSE and MAE, demonstrating superior performance in capturing temporal dynamics.
 
 ---
 
