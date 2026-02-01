@@ -100,6 +100,16 @@ This file contains a clean, ordered monthly revenue time series and serves as th
 
 ## Example Outputs
 
+### Stationarity Check and Differencing
+
+![Differenced Revenue Series](assets/differenced_revenue_series.png)
+
+The original monthly revenue series exhibited a clear upward trend, violating the stationarity assumption required for ARIMA-family models.
+After applying first-order differencing, the series fluctuates around a stable mean with reduced trend effects, indicating that the data is suitable for ARIMA/SARIMA modeling.
+
+This step was crucial to ensure valid parameter estimation and reliable forecasts.
+
+
 ### Autocorrelation Function (ACF)
 
 ![ACF](assets/ACF.png)
@@ -135,12 +145,21 @@ This model provided a strong statistical baseline for comparison with more compl
 The SARIMA model explicitly accounts for seasonal structure in the monthly revenue data.  
 Compared to non-seasonal ARIMA, SARIMA produced more stable forecasts and narrower confidence intervals.
 
-### ARIMA Model – Residual Diagnostics
+### SARIMA Model – Residual Diagnostics (using auto.arima)
 
 ![SARIMA Residuals](assets/risidualsarima.png)
 
-Residuals from the ARIMA model show no significant autocorrelation and approximate normality.  
-This confirms that ARIMA adequately captures both trend and seasonal components of the series.
+Residuals from the SARIMA model show no significant autocorrelation and approximate normality.  
+This confirms that SARIMA adequately captures both trend and seasonal components of the
+series.
+
+### ETS Model Residual Diagnostics
+
+![ETS Residual Diagnostics](assets/ets_residuals.png)
+
+Residual diagnostics for the ETS(A, A, N) model show that while the residuals are centered around zero, they exhibit noticeable variance spikes and mild autocorrelation.
+These patterns indicate that the ETS model struggles to fully capture the underlying dynamics of the revenue series, particularly during periods of sharp revenue changes.
+
 
 ### Backtesting: Forecast vs Actual
 
