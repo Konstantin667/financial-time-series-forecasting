@@ -102,7 +102,7 @@ This file contains a clean, ordered monthly revenue time series and serves as th
 
 ### Stationarity Check and Differencing
 
-![Differenced Revenue Series](assets/differenced_revenue_series.png)
+![Differenced Revenue Series](assets/differenced_revenue_series.jpg)
 
 The original monthly revenue series exhibited a clear upward trend, violating the stationarity assumption required for ARIMA-family models.
 After applying first-order differencing, the series fluctuates around a stable mean with reduced trend effects, indicating that the data is suitable for ARIMA/SARIMA modeling.
@@ -155,7 +155,7 @@ series.
 
 ### ETS Model Residual Diagnostics
 
-![ETS Residual Diagnostics](assets/ets_residuals.png)
+![ETS Residual Diagnostics](assets/ets_residuals.jpg)
 
 Residual diagnostics for the ETS(A, A, N) model show that while the residuals are centered around zero, they exhibit noticeable variance spikes and mild autocorrelation.
 These patterns indicate that the ETS model struggles to fully capture the underlying dynamics of the revenue series, particularly during periods of sharp revenue changes.
