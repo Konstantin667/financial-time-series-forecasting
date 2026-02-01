@@ -181,6 +181,20 @@ SARIMA achieved lower RMSE and MAE, demonstrating superior performance in captur
 - Forecast uncertainty increased with the horizon, which was clearly reflected in the **widening confidence intervals**, emphasizing the importance of risk-aware interpretation in business forecasting.
 
 - Model selection was based on **quantitative error metrics and residual behavior**, not visual fit alone, leading to a more robust and defensible forecasting choice.
+
+## Business Interpretation
+
+The forecasting results provide actionable insights for revenue planning and risk management.
+
+• The SARIMA model captured both trend and seasonality, making it suitable for short- to medium-term financial planning.  
+• Forecast confidence intervals widen over time, highlighting increasing uncertainty and the need for rolling re-forecasting in operational settings.  
+• Compared to ETS, SARIMA showed lower forecast error (RMSE, MAE), indicating better robustness to revenue volatility.  
+• Backtesting results suggest that seasonal patterns play a significant role in revenue dynamics and should be explicitly modeled.  
+
+From a business perspective, these forecasts can support:
+• Monthly budgeting and cash flow planning  
+• Scenario analysis for revenue growth or slowdown  
+• Early detection of deviations from expected performance
 ---
 
 ## Author
