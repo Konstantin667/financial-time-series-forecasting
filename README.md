@@ -210,9 +210,6 @@ From a business perspective, these forecasts can support:
 • Early detection of deviations from expected performance
 
 ---
-## License
-This project is licensed under the MIT License.
----
 
 ## Author
 
@@ -221,3 +218,6 @@ Aspiring Data Analyst / Business Analyst
 Open to opportunities across Europe
 
 GitHub: https://github.com/Konstantin667
+
+## License
+This project is licensed under the MIT License.
