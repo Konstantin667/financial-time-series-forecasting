@@ -139,4 +139,4 @@ This file contains a clean, ordered monthly revenue time series and serves as th
 Aspiring Data Analyst / Business Analyst  
 Open to opportunities across Europe
 
-🔗 GitHub: https://github.com/Konstantin667
+GitHub: https://github.com/Konstantin667
