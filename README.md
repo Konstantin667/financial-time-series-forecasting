@@ -192,6 +192,7 @@ The forecasting results provide actionable insights for revenue planning and ris
 • Backtesting results suggest that seasonal patterns play a significant role in revenue dynamics and should be explicitly modeled. 
 
 From a business perspective, these forecasts can support:
+
 • Monthly budgeting and cash flow planning  
 • Scenario analysis for revenue growth or slowdown  
 • Early detection of deviations from expected performance
