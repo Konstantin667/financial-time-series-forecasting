@@ -135,12 +135,12 @@ This model provided a strong statistical baseline for comparison with more compl
 The SARIMA model explicitly accounts for seasonal structure in the monthly revenue data.  
 Compared to non-seasonal ARIMA, SARIMA produced more stable forecasts and narrower confidence intervals.
 
-### SARIMA Model – Residual Diagnostics
+### ARIMA Model – Residual Diagnostics
 
 ![SARIMA Residuals](assets/risidualsarima.png)
 
-Residuals from the SARIMA model show no significant autocorrelation and approximate normality.  
-This confirms that SARIMA adequately captures both trend and seasonal components of the series.
+Residuals from the ARIMA model show no significant autocorrelation and approximate normality.  
+This confirms that ARIMA adequately captures both trend and seasonal components of the series.
 
 ### Backtesting: Forecast vs Actual
 
