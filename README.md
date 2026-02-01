@@ -75,7 +75,7 @@ This file contains a clean, ordered monthly revenue time series and serves as th
 
 - Import processed monthly revenue data
 - Convert data into a time series object
-- Automatically select model parameters using `auto.arima`
+- Automatically select model parameters using auto.arima
 - Fit **SARIMA** and **ETS** models
 - Analyze residuals (ACF, distribution, independence)
 - Perform backtesting and compare model accuracy
