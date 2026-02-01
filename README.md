@@ -189,12 +189,13 @@ The forecasting results provide actionable insights for revenue planning and ris
 • The SARIMA model captured both trend and seasonality, making it suitable for short- to medium-term financial planning.  
 • Forecast confidence intervals widen over time, highlighting increasing uncertainty and the need for rolling re-forecasting in operational settings.  
 • Compared to ETS, SARIMA showed lower forecast error (RMSE, MAE), indicating better robustness to revenue volatility.  
-• Backtesting results suggest that seasonal patterns play a significant role in revenue dynamics and should be explicitly modeled.  
+• Backtesting results suggest that seasonal patterns play a significant role in revenue dynamics and should be explicitly modeled. 
 
 From a business perspective, these forecasts can support:
 • Monthly budgeting and cash flow planning  
 • Scenario analysis for revenue growth or slowdown  
 • Early detection of deviations from expected performance
+
 ---
 
 ## Author
