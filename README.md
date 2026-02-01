@@ -121,13 +121,6 @@ A significant spike at lag 1 supports the inclusion of a low-order AR component 
 A baseline ARIMA(1,1,1) model was fitted in Python to validate stationarity assumptions and provide an initial forecast.  
 While the model captures the overall trend, wide confidence intervals indicate increasing uncertainty over the forecast horizon.
 
-### Python – Baseline ARIMA Forecast
-
-![Baseline ARIMA Forecast](assets/python_arima_baseline.png)
-
-A baseline ARIMA(1,1,1) model was fitted in Python to validate stationarity assumptions and provide an initial forecast.  
-While the model captures the overall trend, wide confidence intervals indicate increasing uncertainty over the forecast horizon.
-
 ### R – auto.arima Forecast
 
 ![Auto ARIMA Forecast](assets/Autoarima.png)
