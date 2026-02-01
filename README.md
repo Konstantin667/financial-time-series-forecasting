@@ -210,6 +210,9 @@ From a business perspective, these forecasts can support:
 • Early detection of deviations from expected performance
 
 ---
+## License
+This project is licensed under the MIT License.
+---
 
 ## Author
 
