@@ -1,223 +1,117 @@
-# Financial Time Series Forecasting (ARIMA / SARIMA / ETS)
+# Financial Time Series Forecasting (ARIMA / ETS, Python + R)
 
-This project demonstrates an end-to-end time series forecasting pipeline for business revenue data, combining Python for data preprocessing and R for statistical time series modeling.
+Monthly revenue forecasting for an e-commerce marketplace: raw transactional tables → clean monthly series →
+stationarity checks → ARIMA and ETS models → **out-of-sample backtesting against simple benchmarks**.
 
-The goal is to simulate a realistic analytics workflow, where raw transactional data is transformed into a clean time series and used for forecasting with classical econometric models commonly applied in business and finance.
+Python is used for data preparation and a baseline model, R (`forecast`) for model selection and backtesting.
 
----
+## Data
 
-## Project Overview
+- **Source:** [Brazilian E-Commerce Public Dataset by Olist](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce) — ~100k orders, 2016–2018
+- **Revenue definition:** sum of payments of delivered orders, by purchase month (BRL)
+- Raw CSVs are not stored in the repo: download them from Kaggle or
+  [Google Drive](https://drive.google.com/drive/folders/1FeDjNPot8-LrITfVb58msrz1AUJUPZaT) into `data/raw/`
+- Model input: [`data/processed/monthly_revenue.csv`](data/processed/monthly_revenue.csv) — 20 months, Jan 2017 – Aug 2018
 
-**Key objectives:**
-- Build a clean monthly revenue time series from transactional data
-- Test stationarity and apply differencing
-- Compare multiple forecasting models:
-  - ARIMA
-  - SARIMA
-  - ETS (Exponential Smoothing)
-- Perform backtesting and model comparison
-- Produce interpretable forecasts suitable for business decision-making
+**Series boundaries.** Sep–Dec 2016 is the marketplace's test period (November 2016 has no orders, December 2016 a
+single order), so the series starts in January 2017 — otherwise the monthly index has a gap and `ts()` shifts every
+later month. Delivered orders effectively stop after August 2018, so the series ends there.
 
----
+![Monthly revenue](assets/monthly_revenue.png)
 
-## Tools & Technologies
+Revenue grew fast through 2017 and **flattened in 2018** at about 1.0–1.1M per month. With 20 points (less than two
+full years), annual seasonality cannot be estimated, so all models are non-seasonal.
 
-- **Python**: pandas, numpy, statsmodels, matplotlib  
-- **R**: ggplot2, dplyr, readr, lubridate, forecast, tseries 
-- **Methods**: ADF test, ARIMA, SARIMA, ETS, backtesting  
-- **Data source**: Brazilian E-Commerce Public Dataset (Olist)
+## Workflow
 
----
+**Python** — [`notebooks/revenue_preprocessing_and_baseline.ipynb`](notebooks/revenue_preprocessing_and_baseline.ipynb)
+- Merge orders and payments, compute order revenue, aggregate by month, check for missing months
+- ADF test: level p = 0.18 (unit root) → first difference p < 0.001 → **d = 1**
+- ACF/PACF of the differenced series: one significant negative spike at lag 1 → low-order AR term
+- Baseline ARIMA(1,1,0) with drift on a 6-month holdout vs a naive forecast
 
-## Dataset Overview
+**R** — [`r_analysis/arima_ets_forecasting.R`](r_analysis/arima_ets_forecasting.R)
+- `auto.arima` (non-seasonal, full search) and `ets` on the full series, residual diagnostics
+- Backtesting: models re-selected on Jan 2017 – Feb 2018 and evaluated on Mar – Aug 2018,
+  plus rolling-origin one-step-ahead errors (`tsCV`) over the same six months
+- Benchmarks: naive (last value) and random walk with drift
+- Full console output: [`data/processed/r_output.txt`](data/processed/r_output.txt), metrics: [`data/processed/model_metrics.csv`](data/processed/model_metrics.csv)
 
-The project uses the **Olist Brazilian E-Commerce Public Dataset**, which represents real transactional data from a large online marketplace.
+![Differenced series, ACF and PACF](assets/differencing_acf_pacf.png)
 
-The dataset includes:
+## Selected models (full series)
 
-- ~100,000 orders
-- Customer, seller, product, and geolocation data
-- Order lifecycle timestamps (purchase, approval, delivery)
-- Payment values and installment information
-- Product categories (translated to English)
+| Model | Chosen by | In-sample RMSE | Residuals (Ljung-Box) |
+|---|---|---:|---|
+| ARIMA(1,1,0) with drift | `auto.arima`, AICc | 115,890 | no autocorrelation (p = 0.87) |
+| ETS(A,N,N) | `ets`, AICc | 141,894 | no autocorrelation (p = 0.16) |
 
-For this project, the dataset was used to **reconstruct historical revenue**, reflecting how raw operational data is typically handled in real companies rather than working with a pre-aggregated time series.
+In-sample error only shows how well a model fits data it has already seen; the choice below is made on
+out-of-sample errors.
 
-**Original dataset (Kaggle):**  
-https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce
+## Backtesting results
 
----
+Forecasts made at the end of February 2018 for March–August 2018 (models re-selected on the training window only):
 
-## Data Availability
+| Model | RMSE | MAE | MAPE | Bias |
+|---|---:|---:|---:|---:|
+| **Naive (last value)** | **118,334** | **101,465** | **9.2%** | −101,465 |
+| Random walk + drift | 207,972 | 166,737 | 16.3% | +124,410 |
+| ARIMA(1,1,0) with drift | 271,110 | 215,262 | 21.1% | +215,262 |
+| ETS(M,A,N) | 299,408 | 246,552 | 24.0% | +246,552 |
 
-Due to file size limitations, raw CSV files are not stored directly in this repository.
+Rolling one-step-ahead forecasts over the same six months (each month re-fitted on all earlier data):
 
-**Raw datasets (Google Drive):**  
-https://drive.google.com/drive/folders/1FeDjNPot8-LrITfVb58msrz1AUJUPZaT
+| Model | RMSE | MAE |
+|---|---:|---:|
+| **Naive** | **81,260** | **57,595** |
+| Random walk + drift | 98,796 | 87,915 |
+| ARIMA (re-selected each month) | 127,929 | 106,831 |
+| ETS (re-selected each month) | 275,801 | 227,744 |
 
-**Processed dataset used for modeling:**
-data/processed/monthly_revenue.csv
-This file contains a clean, ordered monthly revenue time series and serves as the input for all forecasting models.
+![Backtest](assets/r_backtest.png)
 
-## Workflow Summary
+## Key findings
 
-### Python (Data Preparation & Baseline Modeling)
+- **The naive forecast wins.** Both trend models, trained on the 2017 growth phase, keep extrapolating growth and
+  overestimate the 2018 plateau by about 20% (bias +215k for ARIMA, +247k for ETS per month).
+- **ARIMA beats ETS** on every out-of-sample measure, but neither beats the simplest benchmark. Choosing a model by
+  in-sample fit or AIC alone would have selected a model that is worse than "same as last month".
+- **The regime changed in 2018:** growth stopped. Models fitted to the growth phase cannot see this until enough
+  plateau data accumulates — a classic structural-break problem.
+- **Stationarity tests are weak on 20 points:** the Python ADF test (constant, AIC lag choice) rejects a unit root
+  for the first difference, while `tseries::adf.test` (trend, 2 lags) does not. d = 1 is chosen on the visual trend and
+  the Python test, and is the order `auto.arima` selects.
 
-- Merge multiple transactional tables
-- Calculate order-level revenue
-- Aggregate revenue to monthly frequency
-- Construct a time index
-- Test stationarity using the **ADF test**
-- Apply differencing to achieve stationarity
-- Explore a baseline ARIMA model
+## Business interpretation
 
-### R (Forecasting & Validation)
+- For budgeting in a market that has stopped growing, a flat (naive) forecast is the safer baseline;
+  trend models here would have overstated revenue by ~200k BRL per month.
+- Use **rolling re-forecasting** and always compare a model against a naive benchmark before trusting it.
+- Monitor forecast bias: a run of same-sign errors is an early signal of a regime change.
+- Longer history (2+ years) is needed before seasonal models can be considered.
 
-- Import processed monthly revenue data
-- Convert data into a time series object
-- Automatically select model parameters using auto.arima
-- Fit **SARIMA** and **ETS** models
-- Analyze residuals (ACF, distribution, independence)
-- Perform backtesting and compare model accuracy
+### 6-month forecast from the full series (for illustration)
+![ARIMA forecast](assets/r_arima_forecast.png)
 
----
+Given the backtest, this trend forecast should be read as an optimistic scenario, with the naive forecast as the base case.
 
-### Forecast Model Comparison
+## How to run
 
-| Model   | RMSE     | MAE      |
-|--------|----------|----------|
-| SARIMA | **114,822** | **81,631** |
-| ETS    | 120,492  | 91,425  |
-
-**Key insights:**
-
-- Both models successfully captured the **overall revenue trend**
-- **SARIMA achieved lower error metrics**, indicating better predictive accuracy
-- ETS produced smoother forecasts but handled variance less effectively
-- SARIMA was selected as the **final model** due to stronger backtesting performance
-
----
-
-## Example Outputs
-
-### Stationarity Check and Differencing
-
-![Differenced Revenue Series](assets/differenced_revenue_series.jpg)
-
-The original monthly revenue series exhibited a clear upward trend, violating the stationarity assumption required for ARIMA-family models.
-After applying first-order differencing, the series fluctuates around a stable mean with reduced trend effects, indicating that the data is suitable for ARIMA/SARIMA modeling.
-
-This step was crucial to ensure valid parameter estimation and reliable forecasts.
-
-
-### Autocorrelation Function (ACF)
-
-![ACF](assets/ACF.png)
-
-The ACF plot of the differenced monthly revenue series is used to identify potential moving average (MA) components.  
-Most autocorrelations lie within the confidence bounds, indicating that first-order differencing was sufficient to achieve stationarity.
-
-### Partial Autocorrelation Function (PACF)
-
-![PACF](assets/PACF.png)
-
-The PACF plot helps identify potential autoregressive (AR) terms.  
-A significant spike at lag 1 supports the inclusion of a low-order AR component in the ARIMA model.
-
-### Python – Baseline ARIMA Forecast
-
-![Baseline ARIMA Forecast](assets/python_arima_baseline.png)
-
-A baseline ARIMA(1,1,1) model was fitted in Python to validate stationarity assumptions and provide an initial forecast.  
-While the model captures the overall trend, wide confidence intervals indicate increasing uncertainty over the forecast horizon.
-
-### R – auto.arima Forecast
-
-![Auto ARIMA Forecast](assets/Autoarima.png)
-
-The auto.arima function automatically selected an ARIMA(1,1,0) model with drift based on AIC criteria.  
-This model provided a strong statistical baseline for comparison with more complex seasonal models.
-
-### R – SARIMA Forecast
-
-![SARIMA Forecast](assets/Sarima.png)
-
-The SARIMA model explicitly accounts for seasonal structure in the monthly revenue data.  
-Compared to non-seasonal ARIMA, SARIMA produced more stable forecasts and narrower confidence intervals.
-
-### SARIMA Model – Residual Diagnostics (using auto.arima)
-
-![SARIMA Residuals](assets/risidualsarima.png)
-
-Residuals from the SARIMA model show no significant autocorrelation and approximate normality.  
-This confirms that SARIMA adequately captures both trend and seasonal components of the
-series.
-
-### ETS Model Residual Diagnostics
-
-![ETS Residual Diagnostics](assets/ets_residuals.jpg)
-
-Residual diagnostics for the ETS(A, A, N) model show that while the residuals are centered around zero, they exhibit noticeable variance spikes and mild autocorrelation.
-These patterns indicate that the ETS model struggles to fully capture the underlying dynamics of the revenue series, particularly during periods of sharp revenue changes.
-
-
-### Backtesting: Forecast vs Actual
-
-![Backtesting Results](assets/Backtesting.png)
-
-Backtesting was performed to compare ETS and SARIMA forecasts against actual revenue values.  
-SARIMA achieved lower RMSE and MAE, demonstrating superior performance in capturing temporal dynamics.
-
----
-
-## Key Learnings
-
-- The original monthly revenue series was **non-stationary**, which was confirmed by the ADF test.  
-  After first-order differencing, the series became stationary and suitable for ARIMA-family models.
-
-- ACF and PACF analysis of the differenced series suggested a **low-order AR and MA structure**, supporting the use of compact ARIMA configurations rather than high-order models.
-
-- Auto.arima selected an **ARIMA(1,1,0) with drift**, indicating that revenue growth is driven primarily by a persistent trend component rather than short-term shocks.
-
-- Seasonal patterns were present but **not strong enough to dominate the series**, which is why both ARIMA-based and ETS models were viable candidates.
-
-- **SARIMA outperformed ETS** in backtesting, achieving lower RMSE and MAE:
-  - SARIMA captured both the trend and short-term fluctuations more accurately
-  - ETS produced smoother forecasts but tended to underreact to changes in variance
-
-- Residual diagnostics for the SARIMA model showed:
-  - No significant autocorrelation in residuals
-  - Approximately symmetric residual distribution
-  - Acceptable independence assumptions for forecasting
-
-- Forecast uncertainty increased with the horizon, which was clearly reflected in the **widening confidence intervals**, emphasizing the importance of risk-aware interpretation in business forecasting.
-
-- Model selection was based on **quantitative error metrics and residual behavior**, not visual fit alone, leading to a more robust and defensible forecasting choice.
-
-## Business Interpretation
-
-The forecasting results provide actionable insights for revenue planning and risk management.
-
-• The SARIMA model captured both trend and seasonality, making it suitable for short- to medium-term financial planning.  
-• Forecast confidence intervals widen over time, highlighting increasing uncertainty and the need for rolling re-forecasting in operational settings.  
-• Compared to ETS, SARIMA showed lower forecast error (RMSE, MAE), indicating better robustness to revenue volatility.  
-• Backtesting results suggest that seasonal patterns play a significant role in revenue dynamics and should be explicitly modeled. 
-
-From a business perspective, these forecasts can support:
-
-• Monthly budgeting and cash flow planning  
-• Scenario analysis for revenue growth or slowdown  
-• Early detection of deviations from expected performance
-
----
+```bash
+# Python (pandas, numpy, matplotlib, statsmodels, jupyter)
+jupyter nbconvert --to notebook --execute --inplace notebooks/revenue_preprocessing_and_baseline.ipynb
+```
+```r
+# R (readr, dplyr, ggplot2, forecast, tseries), from the repository root
+source("r_analysis/arima_ets_forecasting.R")
+```
 
 ## Author
 
-**Konstantin Rudnev**  
-Aspiring Data Analyst / Business Analyst  
-Open to opportunities across Europe
-
-GitHub: https://github.com/Konstantin667
+**Konstantin Rudnev** — Business & Product Analyst
+[LinkedIn](https://www.linkedin.com/in/konstantin-rudnev-a96727354) · [GitHub](https://github.com/Konstantin667)
 
 ## License
-This project is licensed under the MIT License.
+
+MIT

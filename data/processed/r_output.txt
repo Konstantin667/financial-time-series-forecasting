@@ -1,0 +1,73 @@
+Observations: 20 | from 2017-01-01 to 2018-08-01 
+
+	Augmented Dickey-Fuller Test
+
+data:  ts_revenue
+Dickey-Fuller = -0.022366, Lag order = 2, p-value = 0.99
+alternative hypothesis: stationary
+
+
+	Augmented Dickey-Fuller Test
+
+data:  ts_diff
+Dickey-Fuller = -2.5096, Lag order = 2, p-value = 0.3782
+alternative hypothesis: stationary
+
+Series: ts_revenue 
+ARIMA(1,1,0) with drift 
+
+Coefficients:
+          ar1     drift
+      -0.5870  44928.98
+s.e.   0.1775  17532.88
+
+sigma^2 = 1.58e+10:  log likelihood = -249.21
+AIC=504.41   AICc=506.01   BIC=507.25
+
+Training set error measures:
+                  ME     RMSE      MAE      MPE     MAPE      MASE       ACF1
+Training set 1963.73 115890.3 81125.58 2.138602 11.14958 0.1303454 0.03470785
+ETS(A,N,N) 
+
+Call:
+ets(y = ts_revenue)
+
+  Smoothing parameters:
+    alpha = 0.7203 
+
+  Initial states:
+    l = 179739.1111 
+
+  sigma:  149569
+
+     AIC     AICc      BIC 
+540.4280 541.9280 543.4151 
+
+Training set error measures:
+                   ME     RMSE      MAE      MPE     MAPE      MASE       ACF1
+Training set 56841.01 141893.6 107638.1 7.868692 17.15097 0.1729434 -0.3803169
+
+	Ljung-Box test
+
+data:  Residuals from ARIMA(1,1,0) with drift
+Q* = 0.71965, df = 3, p-value = 0.8686
+
+Model df: 1.   Total lags used: 4
+
+
+	Ljung-Box test
+
+data:  Residuals from ETS(A,N,N)
+Q* = 6.6524, df = 4, p-value = 0.1554
+
+Model df: 0.   Total lags used: 4
+
+                           model                    evaluation     RMSE      MAE     MAPE    bias
+1             Naive (last value)               6-month holdout 118334.1 101465.4  9.20343 -101465
+2            Random walk + drift               6-month holdout 207972.0 166737.5 16.31066  124410
+3 ARIMA: ARIMA(1,1,0) with drift               6-month holdout 271110.0 215261.7 21.05809  215262
+4                ETS: ETS(M,A,N)               6-month holdout 299408.4 246552.2 24.03577  246552
+5             Naive (last value) rolling 1-step, last 6 months  81260.4  57594.8       NA      NA
+6            Random walk + drift rolling 1-step, last 6 months  98795.9  87915.3       NA      NA
+7 ARIMA (re-selected each month) rolling 1-step, last 6 months 127929.4 106831.2       NA      NA
+8   ETS (re-selected each month) rolling 1-step, last 6 months 275801.2 227744.2       NA      NA
